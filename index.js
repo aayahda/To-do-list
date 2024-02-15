@@ -9,25 +9,33 @@ const db= new pg.Client(
   {
     user:"postgres",
     host:"localhost",
-    database:"",
+    database:"permalist",
     password:"AadhyaRaj@0!",
     port:"5432"
   }
 )
 
+db.connect();
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 let items = [
-  { id: 1, title: "Buy milk" },
-  { id: 2, title: "Finish homework" },
+  
 ];
 
-app.get("/", (req, res) => {
+app.get("/",async (req, res) => {
+  try{const result = await db.query("select * from items order by id asc;");
+
+  items=result.rows;
+  console.log(items);
   res.render("index.ejs", {
-    listTitle: "Today",
+    listTitle: "Today's tasks",
     listItems: items,
-  });
+  });}
+  catch(err){
+    console.log(err);
+  }
 });
 
 app.post("/add", (req, res) => {
