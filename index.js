@@ -49,7 +49,18 @@ app.post("/add", async(req, res) => {
   }
 });
 
-app.post("/edit", (req, res) => {});
+app.post("/edit", async(req, res) => {
+  const item = req.body.updatedItemTitle;
+  const id=req.body.updatedItemId;
+  try{
+  await db.query("update items set title=$1 where id = $2;",[item,id]);
+  res.redirect("/");
+  }
+  catch(err){
+    console.log(err);
+  }
+
+});
 
 app.post("/delete", (req, res) => {});
 
